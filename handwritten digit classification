@@ -1,4 +1,105 @@
+### Title of Project
 
+#Handwritten Digit Prediction - Classification Analysis
+
+### Objective
+
+#The objective of this project is to build a machine learning model that can accurately predict handwritten digits.
+
+### Data Source
+
+# The dataset used for this project is the "digits" dataset from scikit-learn's built-in datasets. It contains images of handwritten digits, where each image is an 8x8 pixel matrix, and the target variable represents the actual digit value (0-9).
+
+
+
+
+### Import Library
+
+from sklearn.datasets import load_digits
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+### Import Data
+
+# dataset load
+digits = load_digits()
+
+
+# Get information about the dataset
+print(digits.DESCR)
+
+
+# Visualize a few sample images from the dataset
+plt.figure(figsize=(8, 8))
+for i in range(10):
+    plt.subplot(2, 5, i + 1)
+    plt.imshow(digits.images[i], cmap='gray')
+    plt.title(f"Label: {digits.target[i]}")
+    plt.axis('off')
+plt.show()
+
+
+# Flatten the 8x8 images into a 1D array for feature variables
+X = digits.data
+
+# Normalize feature variables
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+
+# Define the target variable (y)
+y = digits.target
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the logistic regression model
+model = LogisticRegression()
+
+# Train the model on the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = model.predict(X_test)
+
+# Evaluate the model's accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+# Generate confusion matrix and classification report
+conf_matrix = confusion_matrix(y_test, y_pred)
+class_report = classification_report(y_test, y_pred)
+print("Confusion Matrix:")
+print(conf_matrix)
+print("Classification Report:")
+print(class_report)
+
+
+from PIL import Image
+
+# Load the image and convert it to grayscale
+image = Image.open('download.png').convert('L')
+
+# Resize the image to 8x8 pixels (the same size as the dataset images)
+image = image.resize((8, 8))
+
+# Convert the image to a numpy array
+new_image = np.array(image)
+
+# Flatten the 8x8 image into a 1D array for prediction
+new_image_flattened = new_image.flatten().reshape(1, -1)
+
+# Scale the feature variables using the previously defined scaler
+new_image_scaled = scaler.transform(new_image_flattened)
+
+# Make a prediction using the model
+predicted_digit = model.predict(new_image_scaled)
+
+print("Predicted Digit:", predicted_digit[0])
 
 
 
